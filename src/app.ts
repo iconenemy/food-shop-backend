@@ -1,6 +1,7 @@
 import express from 'express';
 import config from 'config'
 
+import connectDB from './utils/connect.db';
 import AppRouter from './routes/routes';
 
 const PORT = config.get<number>('port') || 5000
@@ -17,4 +18,5 @@ router.init()
 
 app.listen(PORT, () => {
     console.log(`Server has been start on port ${PORT}...`)
+    connectDB()
 })
