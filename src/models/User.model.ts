@@ -52,6 +52,8 @@ const userSchema: Schema<IUser> = new Schema({
         type: Boolean,
         default: true
     }
+}, {
+    versionKey: false
 })
 
 const User: Model<IUser> = model<IUser>('User', userSchema)

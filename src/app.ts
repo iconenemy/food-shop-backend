@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser  from 'cookie-parser'
 import config from 'config'
 
 import connectDB from './utils/connect.db';
@@ -12,6 +13,7 @@ const router = new AppRouter(app)
 // Express configuration
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+app.use(cookieParser())
 
 
 router.init()
