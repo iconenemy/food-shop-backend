@@ -8,8 +8,6 @@ export interface IUser extends Document {
     last_name: string;
     age: number;
     phone_number: string;
-    created_at?: Date;
-    updated_at?: Date;
     is_staff?: boolean;
     is_active?: boolean;
 }

@@ -1,6 +1,6 @@
 import { Application } from 'express';
 
-import userRouter from './api/user.route'
+import authRouter from './api/auth.route'
 
 class AppRouter {
     constructor(private app: Application){}
@@ -8,7 +8,7 @@ class AppRouter {
         this.app.get('/', (req, res) =>{
             res.send('Main page')
         })
-        this.app.use('/api/user', userRouter)
+        this.app.use('/api/auth', authRouter)
     }
 }
 

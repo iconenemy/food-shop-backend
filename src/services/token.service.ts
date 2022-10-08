@@ -1,4 +1,4 @@
-import { DocumentDefinition } from 'mongoose';
+import { DocTypeFromGeneric, DocumentDefinition, Types } from 'mongoose';
 import jwt from 'jsonwebtoken'
 import config from 'config'
 
@@ -24,10 +24,26 @@ class TokenService {
         return jwt.verify(token, config.get<string>('refreshTokenPrivateKey'))
     }
     
-    async createToken (data: DocumentDefinition<Omit<IToken, 'created_at' | 'updated_at'>>) {
-        return await Token.create(data)
+    async createToken (user_id: Types.ObjectId) {
+    return await Token.create({user_id})
     }
 
+
+    async findTokenByUserId (user_id: any){
+        return await Token.findOne({user_id: user_id})
+    }
+
+    async pushTokenByUserId (user_id: Types.ObjectId, token: string) {
+        await Token.updateOne({user_id: user_id}, { $push: {refresh_token: token}})
+    }
+
+    async popTokenByUserId (user_id: Types.ObjectId) {
+        await Token.updateOne({user_id: user_id}, { $pop: {refresh_token: -1}})
+    }
+
+    async findAndPullToken (user_id: Types.ObjectId, refresh_token: string) {
+        await Token.updateOne({user_id: user_id},{ $pull: {refresh_token: refresh_token}})
+    }
 }
 
 export default TokenService

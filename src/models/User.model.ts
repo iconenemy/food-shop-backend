@@ -20,12 +20,10 @@ const userSchema: Schema<IUser> = new Schema({
     first_name: {
         type: String,
         required: true,
-        unique: true
     },
     last_name: {
         type: String,
         required: true,
-        unique: true
     },
     age: {
         type: Number,
@@ -36,14 +34,6 @@ const userSchema: Schema<IUser> = new Schema({
         required: true,
         unique: true
     },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    },
     is_staff: {
         type: Boolean,
         default: false
@@ -53,7 +43,8 @@ const userSchema: Schema<IUser> = new Schema({
         default: true
     }
 }, {
-    versionKey: false
+    versionKey: false,
+    timestamps: true
 })
 
 const User: Model<IUser> = model<IUser>('User', userSchema)
