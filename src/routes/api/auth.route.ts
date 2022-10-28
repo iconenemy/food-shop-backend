@@ -1,25 +1,26 @@
 import { Router } from 'express';
 
-import { bodyValidator } from '../../middlewares/body.validator'
-import { userSchema } from '../../models/validates/user.joi'
+import { bodyValidator } from '../../middlewares/body.validator';
+import { userSchema } from '../../models/validates/user.joi';
 import { errorWrapper } from '../../middlewares/error.wrapper';
-import userController from '../../controllers/auth.controller';
+import authController from '../../controllers/auth.controller';
 import { checkJWT } from '../../middlewares/check.jwt';
 
 const router: Router = Router()
 
 // api/auth/register
-router.post('/register', errorWrapper(bodyValidator(userSchema)), errorWrapper(userController.register.bind(userController)))
+router.post('/register', bodyValidator(userSchema), errorWrapper(authController.register.bind(authController)))
 
 // api/auth/login
-router.post('/login', errorWrapper(bodyValidator(userSchema)), errorWrapper(userController.login.bind(userController)))
+router.post('/login', errorWrapper(bodyValidator(userSchema)), errorWrapper(authController.login.bind(authController)))
 
 // api/auth/logout
-router.post('/logout', errorWrapper(userController.logout.bind(userController)))
+router.post('/logout', errorWrapper(authController.logout.bind(authController)))
 
 // api/auth/refresh
-router.post('/refresh', errorWrapper(userController.refresh.bind(userController)))
+router.get('/refresh', errorWrapper(authController.refresh.bind(authController)))
 
-router.get('/getAll', checkJWT, errorWrapper(userController.getAll.bind(userController)))
+// api/auth/getAll
+router.get('/getAll', checkJWT, errorWrapper(authController.getAll.bind(authController)))
 
 export default router;

@@ -1,6 +1,7 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import cookieParser  from 'cookie-parser'
 import config from 'config'
+import cors from 'cors'
 
 import connectDB from './utils/connect.db';
 import AppRouter from './routes/routes';
@@ -12,9 +13,12 @@ const router = new AppRouter(app)
 
 // Express configuration
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
-
+app.use(express.urlencoded({extended: false}))
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000'
+}))
 
 router.init()
 

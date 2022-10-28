@@ -1,4 +1,4 @@
-import { Document, Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 export interface IToken extends Document {
     user_id: Types.ObjectId;

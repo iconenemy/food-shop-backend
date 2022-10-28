@@ -44,7 +44,7 @@ const userSchema: Schema<IUser> = new Schema({
     }
 }, {
     versionKey: false,
-    timestamps: true
+    timestamps: false
 })
 
 const User: Model<IUser> = model<IUser>('User', userSchema)

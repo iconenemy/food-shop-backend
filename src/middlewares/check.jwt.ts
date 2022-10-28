@@ -7,7 +7,7 @@ export const checkJWT = (req: Request, res: Response, next: NextFunction) => {
     if (token) {
         jwt.verify(token, config.get<string>('accessTokenPrivateKey'), (err, decoded) => {      
           if (err) {
-            return res.status(401).json({msg: 'Failed to authenticate token.'});    
+            return res.status(401).json({msg: 'Unauthorized'});    
           } else {
             req.access = decoded  
             next();

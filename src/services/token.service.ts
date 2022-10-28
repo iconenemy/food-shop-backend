@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 import config from 'config'
 
 import { IUser } from '../models/types/user.type';
-import { IToken } from '../models/types/token.type'
 
 import Token from '../models/Token.model';
 

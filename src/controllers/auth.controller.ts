@@ -32,10 +32,9 @@ class AuthController {
         const newUser = await this.UserService.createUser({...req.body, password: hashPassword})
         await newUser.save()
 
-        return res.status(200).json({
+        return res.status(201).json({
             msg: 'User has been created',
-            username: newUser.username,
-            email: newUser.email
+            status: 201
         })
     } 
     
@@ -43,10 +42,10 @@ class AuthController {
         const { username, password } = req.body
 
         const candidate = await this.UserService.findUserByUsername({username})
-        if (!candidate) return res.status(409).json({msg: `Incorrect data. Try it again`})
+        if (!candidate) return res.status(400).json({msg: 'User with such username does not exist or password is wrong'})
 
         const isMatchPassword = await this.PasswordService.comparePassword(password, candidate.password)
-        if (!isMatchPassword) return res.status(409).json({msg: `Incorrect data. Try it again`})
+        if (!isMatchPassword) return res.status(400).json({msg: 'User with such username does not exist or password is wrong'})
 
         const payload = {
             _id: candidate._id as Types.ObjectId,
@@ -71,7 +70,7 @@ class AuthController {
 
         const cookieOptions : CookieOptions = {
             expires: new Date (
-                Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
+                Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 1000000
             ),
             maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
             httpOnly: true
@@ -107,66 +106,67 @@ class AuthController {
         })
 
         return res.status(200).json({
-            msg: 'success logout'
+            msg: 'success logout',
+            status: 200
         })
     }
 
     async refresh (req: Request, res: Response) {
-        const { refresh_token } = req.cookies 
+
+            const { refresh_token } = req.cookies 
+            
+            const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
+            if (!_id) return res.status(403).json({msg: 'Forbidden decoded'})
         
-        const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
-        if (!_id) return res.status(403).json({msg: 'Forbidden decoded'})
+            const token = await this.TokenService.findTokenByUserId(_id)
+            if (!token) return res.status(403).json({msg: 'Forbidden session'})
+            
+            const user = await this.UserService.findUserById(_id)
+            if (!user) return res.status(403).json({msg: 'Forbidden user'})
     
-        const token = await this.TokenService.findTokenByUserId(_id)
-        if (!token) return res.status(403).json({msg: 'Forbidden session'})
-        
-        const user = await this.UserService.findUserById(_id)
-        if (!user) return res.status(403).json({msg: 'Forbidden user'})
-
-        await this.TokenService.findAndPullToken(_id, refresh_token)
-
-        res.clearCookie('refresh_token')
-        res.cookie('logged_in', false, {
-              maxAge: 1 
-        })
-
-        const payload = {
-            _id: user._id,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name
-        }
-
-        const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
-        
-        await this.TokenService.pushTokenByUserId(payload._id, refreshToken)
-
-        const cookieOptions : CookieOptions = {
-            expires: new Date (
-                Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
-            ),
-            maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
-            httpOnly: true
-        }
-
-        res.cookie('refresh_token', refreshToken, cookieOptions)
-        res.cookie('logged_in', true, {
-            ...cookieOptions, 
-            httpOnly: true, 
-            maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000
-        })
-
-        return res.status(200).json({
-            msg: 'Success',
-            accessToken,
-            refreshToken
-        })
+            await this.TokenService.findAndPullToken(_id, refresh_token)
+    
+            res.clearCookie('refresh_token')
+            res.cookie('logged_in', false, {
+                  maxAge: 1 
+            })
+    
+            const payload = {
+                _id: user._id,
+                username: user.username,
+                first_name: user.first_name,
+                last_name: user.last_name
+            }
+    
+            const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
+            
+            await this.TokenService.pushTokenByUserId(payload._id, refreshToken)
+    
+            const cookieOptions : CookieOptions = {
+                expires: new Date (
+                    Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
+                ),
+                maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
+                httpOnly: true
+            }
+    
+            res.cookie('refresh_token', refreshToken, cookieOptions)
+            res.cookie('logged_in', true, {
+                ...cookieOptions, 
+                httpOnly: true, 
+                maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000
+            })
+    
+            return res.status(200).json({
+                msg: 'Success',
+                accessToken,
+                refreshToken
+            })
     }
 
     async getAll (req: Request, res: Response) {
         const list: Array<IUser> = await this.UserService.getAll()
 
-    
         res.status(200).json({
             user: list
         })
