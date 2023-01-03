@@ -2,7 +2,9 @@ import express, { NextFunction } from 'express';
 import cookieParser  from 'cookie-parser'
 import config from 'config'
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
 
+import swaggerFile from './swagger_output.json'
 import connectDB from './utils/connect.db';
 import AppRouter from './routes/routes';
 
@@ -19,6 +21,11 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }))
+
+
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+
+
 
 router.init()
 
