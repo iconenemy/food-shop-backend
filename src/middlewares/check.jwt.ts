@@ -14,6 +14,6 @@ export const checkJWT = (req: Request, res: Response, next: NextFunction) => {
           }
         })
     } else {
-        return res.status(405).json({msg: 'No token provided.'})
-      }
+      return res.status(405).json({msg: 'No token provided.'})
+    }
 }

@@ -1,4 +1,5 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
+import fileUpload from 'express-fileupload'
 import cookieParser  from 'cookie-parser'
 import config from 'config'
 import cors from 'cors'
@@ -17,8 +18,12 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}))
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: config.get<string>('clientURL')
 }))
+app.use(fileUpload({
+    createParentPath: true
+}))
+
 
 router.init()
 

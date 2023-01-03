@@ -19,13 +19,13 @@ class AuthController {
         const {username, email, password, phone_number} = req.body
 
         const candidateByUsername = await this.UserService.findUserByUsername({username})
-        if (candidateByUsername) return res.status(409).json({msg: `This username has already used`})
+        if (candidateByUsername) return res.status(400).json({message: `This username has already used`})
 
         const candidateByEmail = await this.UserService.findUserByEmail({email})
-        if (candidateByEmail) return res.status(409).json({msg: `This email has already used`})
+        if (candidateByEmail) return res.status(400).json({message: `This email has already used`})
 
         const candidateByPhoneNumber = await this.UserService.findUserByPhoneNumber({phone_number})
-        if (candidateByPhoneNumber) return res.status(409).json({msg: `This phone number has already used`})
+        if (candidateByPhoneNumber) return res.status(400).json({message: `This phone number has already used`})
 
         const hashPassword = await this.PasswordService.hashPassword(password)
 
@@ -33,7 +33,7 @@ class AuthController {
         await newUser.save()
 
         return res.status(201).json({
-            msg: 'User has been created',
+            message: 'User has been created',
             status: 201
         })
     } 
@@ -42,18 +42,19 @@ class AuthController {
         const { username, password } = req.body
 
         const candidate = await this.UserService.findUserByUsername({username})
-        if (!candidate) return res.status(400).json({msg: 'User with such username does not exist or password is wrong'})
+        if (!candidate) return res.status(400).json({message: 'User with such username does not exist or password is wrong'})
 
         const isMatchPassword = await this.PasswordService.comparePassword(password, candidate.password)
-        if (!isMatchPassword) return res.status(400).json({msg: 'User with such username does not exist or password is wrong'})
+        if (!isMatchPassword) return res.status(400).json({message: 'User with such username does not exist or password is wrong'})
+
+        if (candidate.is_active === false) res.status(402).json({message: 'User with such username does not have an access to content'})
 
         const payload = {
             _id: candidate._id as Types.ObjectId,
             username: candidate.username,
-            first_name: candidate.first_name,
-            last_name: candidate.last_name
+            is_staff: candidate.is_staff
         }
-
+        
         const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
         
         const tokenCandidate = await this.TokenService.findTokenByUserId(payload._id)
@@ -72,7 +73,7 @@ class AuthController {
             expires: new Date (
                 Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 1000000
             ),
-            maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
+            maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 1000000,
             httpOnly: true
         }
 
@@ -84,7 +85,10 @@ class AuthController {
         })
 
         return res.status(200).json({
-            msg: 'Success',
+            message: 'Success login',
+            status: 200,
+            username: candidate.username,
+            is_staff: candidate.is_staff,
             accessToken,
             refreshToken
         })
@@ -93,7 +97,7 @@ class AuthController {
     async logout (req: Request, res: Response) {
         const { refresh_token } = req.cookies
         if (!refresh_token) return res.status(403).json({
-            msg: 'The client does not have access rights to the content'
+            message: 'The client does not have access rights to the content'
         })
 
         const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
@@ -106,23 +110,24 @@ class AuthController {
         })
 
         return res.status(200).json({
-            msg: 'success logout',
+            message: 'success logout',
             status: 200
         })
     }
 
     async refresh (req: Request, res: Response) {
 
-            const { refresh_token } = req.cookies 
+            const { refresh_token } = req.cookies
+            if (refresh_token === null) return res.status(405).json('No token provided') 
             
             const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
-            if (!_id) return res.status(403).json({msg: 'Forbidden decoded'})
+            if (!_id) return res.status(403).json({message: 'Forbidden decoded'})
         
             const token = await this.TokenService.findTokenByUserId(_id)
-            if (!token) return res.status(403).json({msg: 'Forbidden session'})
+            if (!token) return res.status(403).json({message: 'Forbidden session'})
             
             const user = await this.UserService.findUserById(_id)
-            if (!user) return res.status(403).json({msg: 'Forbidden user'})
+            if (!user) return res.status(403).json({message: 'Forbidden user'})
     
             await this.TokenService.findAndPullToken(_id, refresh_token)
     
@@ -134,8 +139,7 @@ class AuthController {
             const payload = {
                 _id: user._id,
                 username: user.username,
-                first_name: user.first_name,
-                last_name: user.last_name
+                is_staff: user.is_staff
             }
     
             const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
@@ -144,9 +148,9 @@ class AuthController {
     
             const cookieOptions : CookieOptions = {
                 expires: new Date (
-                    Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
+                    Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 100000
                 ),
-                maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
+                maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 100000,
                 httpOnly: true
             }
     
@@ -158,19 +162,13 @@ class AuthController {
             })
     
             return res.status(200).json({
-                msg: 'Success',
+                message: 'Success refresh',
+                status: 200,
                 accessToken,
-                refreshToken
+                refreshToken,
+                is_staff: user.is_staff,
+                username: user.username
             })
-    }
-
-    async getAll (req: Request, res: Response) {
-        const list: Array<IUser> = await this.UserService.getAll()
-
-        res.status(200).json({
-            user: list
-        })
-        
     }
 }
 
