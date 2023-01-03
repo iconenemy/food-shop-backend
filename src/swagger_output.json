@@ -1,0 +1,500 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Food Shop API",
+    "description": ""
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/admin/models": {
+      "get": {
+        
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}/keys": {
+      "get": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}": {
+      "get": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}/create": {
+      "post": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}/{id}/update": {
+      "post": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}/{id}/find": {
+      "get": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/api/admin/{model}/{id}/delete": {
+      "get": {
+        "tags": ["Admin API"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },   
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Auth API"],
+        "description": "Register new user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createUser"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "User has been created"
+          },
+          "400": {
+            "description": "Some of data has already used"
+          },
+          "455": {
+            "description": "Scheme validation error"
+          },
+          "5XX": {
+            "description": "Unexpected error."
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth API"],
+        "description": "Sign in to the system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref":"#/definitions/loginUser"            
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success login"
+          },
+          "400": {
+            "description": "User with such username does not exist or password is wrong"
+          },
+          "402": {
+            "description": "User with such username does not have an access to content"
+          },
+          "5XX": {
+            "description": "Unexpected error."
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth API"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "get": {
+        "tags": ["Auth API"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "api/food/section/get-all": {
+      "get": {
+        "tags": ["Food API"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/food/item/get-list-by-section": {
+      "post": {
+        "tags": ["Food API"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }, 
+  "definitions": {
+    "User": {
+      "required": ["username", "email", "password", "first_name", "last_name", "age", "phone_number"],
+      "properties": {
+        "_id": {
+          "type": "Type.ObjectId"
+        },
+        "username": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "password": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "number"
+        },
+        "phone_number": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "is_staff": {
+          "type": "boolean"
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "FoodItem": {
+      "required": ["name", "food_section", "ordering_priority", "image", "price"],
+      "properties": {
+        "_id": {
+          "type": "Type.ObjectId"
+        },
+        "name": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "food_section": {
+          "type": "Type.ObjectId",
+          "uniqueItems": true
+        },
+        "ordering_priority": {
+          "type": "number"
+        },
+        "is_available": {
+          "type": "boolean"
+        },
+        "image": {
+          "type": "string"
+        },
+        "price": {
+          "type": "Types.Decimal128"
+        }
+      }
+    },
+    "FoodSection": {
+      "required": ["name", "ordering_priority"],
+      "properties": {
+        "_id": {
+          "type": "Type.ObjectId"
+        },
+        "name": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "ordering_priority": {
+          "type": "number"
+        },
+        "is_available": {
+          "type": "boolean"
+        },
+        "image": {
+          "type": "string"
+        }
+      }
+    },
+  
+    "createUser": {
+      "required": ["username", "email", "password", "first_name", "last_name", "age", "phone_number"],
+      "properties": {
+        "username": {
+          "type": "string",
+          "uniqueItems": true,
+          "example": "vanek1337"
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true,
+          "example": "vanenk1337@g.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "first_name": {
+          "type": "string",
+          "example": "John"
+        },
+        "last_name": {
+          "type": "string",
+          "example": "Week"
+        },
+        "age": {
+          "type": "number",
+          "example": 25
+        },
+        "phone_number": {
+          "type": "string",
+          "uniqueItems": true,
+          "example": "0982312432"
+        },
+        "is_staff": {
+          "type": "boolean",
+          "example": false
+        },
+        "is_active": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "loginUser": {
+      "required": ["username", "password"],
+      "properties": {
+        "username": {
+          "type": "string",
+          "uniqueItems": true,
+          "example": "vanek322"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456789"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "schema": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
