@@ -1,6 +1,6 @@
 {
     "port": 5000,
-    "mongoURL": "mongodb+srv://icon:icon@cluster0.lxbojvg.mongodb.net/?retryWrites=true&w=majority",
+    "mongoURL": "url",
     "salt": 9,
     "accessTokenPrivateKey": "ACCESS_TOKEN_PRIVATE_KEY",
     "refreshTokenPrivateKey": "REFRESH_TOKEN_PRIVATE_KEY'",
