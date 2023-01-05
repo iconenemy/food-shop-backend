@@ -6,6 +6,8 @@
     "refreshTokenPrivateKey": "REFRESH_TOKEN_PRIVATE_KEY'",
     "accessTokenExpiresIn": 20,
     "refreshTokenExpiresIn": 7,
+    "refreshTokenExpiresInDay": 86400000,
+    "accessTokenExpiresInMinute": 60000,
     "clientURL": "http://localhost:3000",
     "debug": false
 }

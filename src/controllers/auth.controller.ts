@@ -71,18 +71,13 @@ class AuthController {
 
         const cookieOptions : CookieOptions = {
             expires: new Date (
-                Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 1000000
+                Date.now() + config.get<number>('refreshTokenExpiresInDay') * 7
             ),
-            maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 1000000,
+            maxAge: config.get<number>('refreshTokenExpiresInDay') * 7,
             httpOnly: true
         }
 
         res.cookie('refresh_token', refreshToken, cookieOptions)
-        res.cookie('logged_in', true, {
-            ...cookieOptions, 
-            httpOnly: true, 
-            maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000
-        })
 
         return res.status(200).json({
             message: 'Success login',
@@ -105,9 +100,6 @@ class AuthController {
         await this.TokenService.findAndPullToken(_id, refresh_token)
 
         res.clearCookie('refresh_token')
-        res.cookie('logged_in', false, {
-              maxAge: 1 
-        })
 
         return res.status(200).json({
             message: 'success logout',
@@ -117,58 +109,50 @@ class AuthController {
 
     async refresh (req: Request, res: Response) {
 
-            const { refresh_token } = req.cookies
-            if (refresh_token === null) return res.status(405).json('No token provided') 
+        const { refresh_token } = req.cookies
+        if (refresh_token === null) return res.status(405).json('No token provided') 
             
-            const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
-            if (!_id) return res.status(403).json({message: 'Forbidden decoded'})
+        const { _id } = this.TokenService.veriftyRefreshToken(refresh_token) as JwtPayload
+        if (!_id) return res.status(403).json({message: 'Forbidden decoded'})
         
-            const token = await this.TokenService.findTokenByUserId(_id)
-            if (!token) return res.status(403).json({message: 'Forbidden session'})
+        const token = await this.TokenService.findTokenByUserId(_id)
+        if (!token) return res.status(403).json({message: 'Forbidden session'})
             
-            const user = await this.UserService.findUserById(_id)
-            if (!user) return res.status(403).json({message: 'Forbidden user'})
+        const user = await this.UserService.findUserById(_id)
+        if (!user) return res.status(403).json({message: 'Forbidden user'})
     
-            await this.TokenService.findAndPullToken(_id, refresh_token)
+        await this.TokenService.findAndPullToken(_id, refresh_token)
     
-            res.clearCookie('refresh_token')
-            res.cookie('logged_in', false, {
-                  maxAge: 1 
-            })
+        res.clearCookie('refresh_token')
     
-            const payload = {
-                _id: user._id,
-                username: user.username,
-                is_staff: user.is_staff
-            }
+        const payload = {
+            _id: user._id,
+            username: user.username,
+            is_staff: user.is_staff
+        }
     
-            const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
+        const {accessToken, refreshToken} = this.TokenService.generateToken(payload)
             
-            await this.TokenService.pushTokenByUserId(payload._id, refreshToken)
+        await this.TokenService.pushTokenByUserId(payload._id, refreshToken)
     
-            const cookieOptions : CookieOptions = {
-                expires: new Date (
-                    Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 100000
-                ),
-                maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000 * 100000,
-                httpOnly: true
-            }
+        const cookieOptions : CookieOptions = {
+            expires: new Date (
+                Date.now() + config.get<number>('refreshTokenExpiresInDay') * 7
+            ),
+            maxAge: config.get<number>('refreshTokenExpiresInDay') * 7,
+            httpOnly: true
+        }
     
-            res.cookie('refresh_token', refreshToken, cookieOptions)
-            res.cookie('logged_in', true, {
-                ...cookieOptions, 
-                httpOnly: true, 
-                maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000
-            })
+        res.cookie('refresh_token', refreshToken, cookieOptions)
     
-            return res.status(200).json({
-                message: 'Success refresh',
-                status: 200,
-                accessToken,
-                refreshToken,
-                is_staff: user.is_staff,
-                username: user.username
-            })
+        return res.status(200).json({
+            message: 'Success refresh',
+            status: 200,
+            accessToken,
+            refreshToken,
+            is_staff: user.is_staff,
+            username: user.username
+        })
     }
 }
 

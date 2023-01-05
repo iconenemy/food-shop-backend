@@ -6,7 +6,8 @@ import User from "../models/User.model";
 
 export default class UserService {
     async createUser (data: DocumentDefinition<Omit<IUser, 'is_active'>>) {
-        const debug: boolean = config.get("debug")
+        // Allow to create an admin-user only in a debug mode
+        const debug: boolean = config.get<boolean>("debug")
         if (debug === false){
             data.is_staff = false
         }
