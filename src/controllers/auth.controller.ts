@@ -71,9 +71,9 @@ class AuthController {
 
         const cookieOptions : CookieOptions = {
             expires: new Date (
-                Date.now() + config.get<number>('refreshTokenExpiresInDay') * 7
+                Date.now() + config.get<number>('refreshTokenExpiresInDays') * 24 * 60 * 60 * 1000
             ),
-            maxAge: config.get<number>('refreshTokenExpiresInDay') * 7,
+            maxAge: config.get<number>('refreshTokenExpiresInDays') * 24 * 60 * 60 * 1000,
             httpOnly: true
         }
 
@@ -137,9 +137,9 @@ class AuthController {
     
         const cookieOptions : CookieOptions = {
             expires: new Date (
-                Date.now() + config.get<number>('refreshTokenExpiresInDay') * 7
+                Date.now() + config.get<number>('refreshTokenExpiresInDays') * 24 * 60 * 60 * 1000
             ),
-            maxAge: config.get<number>('refreshTokenExpiresInDay') * 7,
+            maxAge: config.get<number>('refreshTokenExpiresInDays') * 24 * 60 * 60 * 1000,
             httpOnly: true
         }
     

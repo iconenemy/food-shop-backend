@@ -9,8 +9,8 @@ import Token from '../models/Token.model';
 class TokenService {
     
     generateToken (payload: DocumentDefinition<Pick<IUser, 'username' | '_id' | 'is_staff'>>) {
-        const accessToken = jwt.sign(payload, config.get('accessTokenPrivateKey'), {expiresIn: `${config.get('accessTokenExpiresIn')}m`})
-        const refreshToken = jwt.sign(payload, config.get('refreshTokenPrivateKey'), {expiresIn: `${config.get('refreshTokenExpiresIn')}d`})
+        const accessToken = jwt.sign(payload, config.get('accessTokenPrivateKey'), {expiresIn: `${config.get('accessTokenExpiresIn')}`})
+        const refreshToken = jwt.sign(payload, config.get('refreshTokenPrivateKey'), {expiresIn: `${config.get('refreshTokenExpiresIn')}`})
 
         return {accessToken, refreshToken}
     }
