@@ -4,7 +4,6 @@ import { bodyValidator } from '../../middlewares/body.validator';
 import { userSchema } from '../../models/validates/user.joi';
 import { errorWrapper } from '../../middlewares/error.wrapper';
 import authController from '../../controllers/auth.controller';
-import { checkJWT } from '../../middlewares/check.jwt';
 
 const router: Router = Router()
 
@@ -19,8 +18,5 @@ router.post('/logout', errorWrapper(authController.logout.bind(authController)))
 
 // api/auth/refresh
 router.get('/refresh', errorWrapper(authController.refresh.bind(authController)))
-
-// api/auth/getAll
-router.get('/getAll', checkJWT, errorWrapper(authController.getAll.bind(authController)))
 
 export default router;

@@ -8,9 +8,9 @@ import Token from '../models/Token.model';
 
 class TokenService {
     
-    generateToken (payload: DocumentDefinition<Pick<IUser, 'username' | '_id' | 'first_name'| 'last_name'>>) {
-        const accessToken = jwt.sign(payload, config.get('accessTokenPrivateKey'), {expiresIn: `${config.get('accessTokenExpiresIn')}m`})
-        const refreshToken = jwt.sign(payload, config.get('refreshTokenPrivateKey'), {expiresIn: `${config.get('refreshTokenExpiresIn')}d`})
+    generateToken (payload: DocumentDefinition<Pick<IUser, 'username' | '_id' | 'is_staff'>>) {
+        const accessToken = jwt.sign(payload, config.get('accessTokenPrivateKey'), {expiresIn: `${config.get('accessTokenExpiresIn')}`})
+        const refreshToken = jwt.sign(payload, config.get('refreshTokenPrivateKey'), {expiresIn: `${config.get('refreshTokenExpiresIn')}`})
 
         return {accessToken, refreshToken}
     }
@@ -27,9 +27,12 @@ class TokenService {
     return await Token.create({user_id})
     }
 
-
     async findTokenByUserId (user_id: any){
         return await Token.findOne({user_id: user_id})
+    }
+
+    async findAndPullToken (user_id: Types.ObjectId, refresh_token: string) {
+        await Token.updateOne({user_id: user_id},{ $pull: {refresh_token: refresh_token}})
     }
 
     async pushTokenByUserId (user_id: Types.ObjectId, token: string) {
@@ -40,8 +43,8 @@ class TokenService {
         await Token.updateOne({user_id: user_id}, { $pop: {refresh_token: -1}})
     }
 
-    async findAndPullToken (user_id: Types.ObjectId, refresh_token: string) {
-        await Token.updateOne({user_id: user_id},{ $pull: {refresh_token: refresh_token}})
+    async getAll () {
+        return await Token.find()
     }
 }
 
