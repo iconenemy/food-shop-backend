@@ -15,5 +15,7 @@ export const foodItemSchema = Joi.object<IFoodItem>({
         'number.greater': 'Ordering priority should be greater than 0',
     }),
     is_available: Joi.boolean(),
-    image: Joi.string()
+    price: Joi.required(),
+    food_section: Joi.required(),
+    image: Joi.string().required()
 })

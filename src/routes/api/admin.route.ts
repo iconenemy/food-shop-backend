@@ -14,19 +14,4 @@ router.get('/models', checkJWT, checkIsStaff, errorWrapper(adminController.getMo
 // api/admin/:model/keys
 router.get('/:model/keys', checkJWT, checkIsStaff, errorWrapper(adminController.getKeys.bind(adminController)))
 
-// api/admin/:model
-router.get('/:model', checkJWT, checkIsStaff, errorWrapper(adminController.getAll.bind(adminController))) 
-
-// api/admin/:model/create
-router.post('/:model/create', checkJWT, checkIsStaff, errorWrapper(adminController.create.bind(adminController)))
-
-// api/admin/:model/:id/update
-router.post('/:model/:id/update', checkJWT, checkIsStaff, errorWrapper(adminController.update.bind(adminController)))
-
-// api/admin/:model/:id/find
-router.get('/:model/:id/find', checkJWT, checkIsStaff, errorWrapper(adminController.findOneById.bind(adminController)))
-
-// api/admin/:model/:id/delete
-router.get('/:model/:id/delete', checkJWT, checkIsStaff, errorWrapper(adminController.delete.bind(adminController)))
-
 export default router;

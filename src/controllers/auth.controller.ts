@@ -47,7 +47,7 @@ class AuthController {
         const isMatchPassword = await this.PasswordService.comparePassword(password, candidate.password)
         if (!isMatchPassword) return res.status(400).json({message: 'User with such username does not exist or password is wrong'})
 
-        if (candidate.is_active === false) res.status(402).json({message: 'User with such username does not have an access to content'})
+        if (candidate.is_active === false) res.status(400).json({message: 'User with such username does not have an access to content'})
 
         const payload = {
             _id: candidate._id as Types.ObjectId,
