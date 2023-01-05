@@ -10,18 +10,18 @@ import { checkIsStaff } from '../../middlewares/check.is.staff';
 const router: Router = Router()
 
 // api/food-section/get-all
-router.get('/get-all', errorWrapper(foodSectionController.getAll.bind(foodSectionController)))
+router.get('/get-all', checkJWT, checkIsStaff, errorWrapper(foodSectionController.getAll.bind(foodSectionController)))
 
 // api/food-section/:id/find
-router.get('/:id/find', errorWrapper(foodSectionController.findById.bind(foodSectionController)))
+router.get('/:id/find', checkJWT, checkIsStaff, errorWrapper(foodSectionController.findById.bind(foodSectionController)))
 
 // api/food-section/:id/delete
-router.get('/:id/delete', errorWrapper(foodSectionController.delete.bind(foodSectionController)))
+router.get('/:id/delete', checkJWT, checkIsStaff, errorWrapper(foodSectionController.delete.bind(foodSectionController)))
 
 // api/food-section/create
-router.post('/create', bodyValidator(foodSectionSchema), errorWrapper(foodSectionController.create.bind(foodSectionController)))
+router.post('/create', checkJWT, checkIsStaff, bodyValidator(foodSectionSchema), errorWrapper(foodSectionController.create.bind(foodSectionController)))
 
 // api/food-section/:id/update
-router.post('/:id/update', bodyValidator(foodSectionSchema), errorWrapper(foodSectionController.update.bind(foodSectionController)))
+router.post('/:id/update', checkJWT, checkIsStaff, bodyValidator(foodSectionSchema), errorWrapper(foodSectionController.update.bind(foodSectionController)))
 
 export default router;

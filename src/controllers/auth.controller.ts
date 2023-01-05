@@ -19,13 +19,13 @@ class AuthController {
         const {username, email, password, phone_number} = req.body
 
         const candidateByUsername = await this.UserService.findUserByUsername({username})
-        if (candidateByUsername) return res.status(400).json({message: `This username has already used`})
+        if (candidateByUsername) return res.status(400).json({message: `This username is already in use. Please try different username.`})
 
         const candidateByEmail = await this.UserService.findUserByEmail({email})
-        if (candidateByEmail) return res.status(400).json({message: `This email has already used`})
+        if (candidateByEmail) return res.status(400).json({message: `This email is already in use. Please try different email.`})
 
         const candidateByPhoneNumber = await this.UserService.findUserByPhoneNumber({phone_number})
-        if (candidateByPhoneNumber) return res.status(400).json({message: `This phone number has already used`})
+        if (candidateByPhoneNumber) return res.status(400).json({message: `This phone is already in use. Please try different phone.`})
 
         const hashPassword = await this.PasswordService.hashPassword(password)
 
