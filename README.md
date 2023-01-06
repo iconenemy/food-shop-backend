@@ -140,20 +140,22 @@ or
 
 * #####  Сonfig settings
 
-Step 1. You should change the extension of the file from:  
+Step 1. You should copy this file:
 
 > _default.json.example_ 
 
-to the extension:
+and delete **.example** from the name to get:
+
 > _default.json_
 
-which can be found on such a file system
+and set its values according to your needs:
 
 ```
 
 📦src
  ┣ 📂config
  ┃ ┣📜default.json.exaple
+ ┃ ┣📜default.json
  ```
 
 Step 2. Create a custom definition, for using a feature in TypeScript. Go to file:
@@ -214,7 +216,7 @@ Use the command in terminal:
 
 > yarn start 
 
-* Default server start on [localhost:5000/](localhost:5000)
+* Default server start on http://localhost:5000
 
-* All available endpoints can be found [here](http://localhost:5000/doc/#)
+* All available endpoints can be found http://localhost:5000/doc/#
 
